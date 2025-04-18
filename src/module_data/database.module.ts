@@ -1,18 +1,22 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+
 import { databaseConfig } from '../config/database.config';
-import { DatabaseController } from './controller/database.controller';
 import { DatabaseService } from './service/database.service';
-import { Order } from './models/order.entity';
 import { Product } from './models/product.entity';
+import { InitController } from './controller/init.controller';
+import { ConfigService } from '@nestjs/config';
+import { AuthModule } from 'src/shared/auth/auth.module';
 
 @Module({
   imports: [
     TypeOrmModule.forRoot(databaseConfig),
-    TypeOrmModule.forFeature([Product, Order])
+    TypeOrmModule.forFeature([Product]),
+    AuthModule
   ],
-  controllers: [DatabaseController],
+  controllers: [InitController],
   providers: [
+    ConfigService,
     {
       provide: "DatabaseServiceInterface",
       useClass: DatabaseService

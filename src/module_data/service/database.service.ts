@@ -1,4 +1,3 @@
-import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as ExcelJS from 'exceljs';
@@ -7,7 +6,7 @@ import * as ExcelJS from 'exceljs';
 
 import { DatabaseServiceInterface } from './database.service.interface';
 import { Product } from '../models/product.entity';
-import { ImportResult } from '../models/import-response';
+import { ImportResult } from '../models/dto/import-response';
 
 
 
