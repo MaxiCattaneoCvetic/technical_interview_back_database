@@ -1,4 +1,3 @@
-
 import {
     CanActivate,
     ExecutionContext,
@@ -17,25 +16,38 @@ export class AuthGuard implements CanActivate {
     ) { }
 
     async canActivate(context: ExecutionContext): Promise<boolean> {
-        // const JWT_SECRET = this.configService.get<string>('JWT_SECRET');
         const request = context.switchToHttp().getRequest();
         const token = this.extractTokenFromHeader(request);
-        if (!token) {
-            throw new UnauthorizedException();
+        const apiKey = this.extractApiKey(request);
+        const secret = this.configService.get<string>('JWT_SECRET');
+        const validApiKey = this.configService.get<string>('API_KEY');
+       
+        if (apiKey && apiKey === validApiKey) {
+            return true;
         }
+
+       
+        if (!token) {
+            throw new UnauthorizedException('No authentication provided');
+        }
+
         try {
             const payload = await this.jwtService.verifyAsync(token, {
-                secret: this.configService.get<string>('JWT_SECRET')
+                secret: secret
             });
             request['user'] = payload;
+            return true;
         } catch {
-            throw new UnauthorizedException();
+            throw new UnauthorizedException('Invalid token');
         }
-        return true;
     }
 
     private extractTokenFromHeader(request: Request): string | undefined {
         const [type, token] = request.headers.authorization?.split(' ') ?? [];
         return type === 'Bearer' ? token : undefined;
+    }
+
+    private extractApiKey(request: Request): string | undefined {
+        return request.headers['x-api-key'] as string;
     }
 }

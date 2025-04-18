@@ -2,6 +2,7 @@ import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 
 import { Product } from 'src/module_data/models/product.entity';
+import { Order } from 'src/module_order/models/order.entity';
 
 
 config();
@@ -13,7 +14,7 @@ export const databaseConfig: TypeOrmModuleOptions = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: [Product],
+  entities: [Product,Order],
   synchronize: false,
   ssl: process.env.DB_SSL === 'true' ? {
     rejectUnauthorized: false

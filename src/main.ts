@@ -2,10 +2,24 @@ import { NestFactory } from '@nestjs/core';
 import { onRequest } from 'firebase-functions/v2/https';
 import { ExpressAdapter, NestExpressApplication } from '@nestjs/platform-express';
 import * as express from 'express';
+import * as cors from 'cors';
 import { AppModule } from './app.module';
 
 const expressServer = express();
 let app: NestExpressApplication;
+
+// Configure CORS options
+const corsOptions: cors.CorsOptions = {
+  origin: [
+    'http://localhost:3000',
+    'https://technical-interview-front.vercel.app'
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
+  credentials: true,
+};
+
+expressServer.use(cors(corsOptions));
 
 const initializeNestApp = async (): Promise<NestExpressApplication> => {
   if (!app) {
@@ -13,11 +27,10 @@ const initializeNestApp = async (): Promise<NestExpressApplication> => {
       AppModule,
       new ExpressAdapter(expressServer),
     );
-
+    // Still keep this for local development
     app.enableCors({
       origin: [
         'http://localhost:3000',
-        'https://api-wvuvaorzlq-uc.a.run.app',
         'https://technical-interview-front.vercel.app'
       ],
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
@@ -32,12 +45,7 @@ const initializeNestApp = async (): Promise<NestExpressApplication> => {
 }
 
 export const api = onRequest(async (request, response) => {
-  // Handle preflight requests
-  if (request.method === 'OPTIONS') {
-    response.status(204).end();
-    return;
-  }
-
+  // No need for manual OPTIONS handling, cors middleware will handle it
   await initializeNestApp();
   expressServer(request, response);
 });
