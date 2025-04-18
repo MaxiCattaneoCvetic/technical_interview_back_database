@@ -15,6 +15,14 @@ const initializeNestApp = async (): Promise<NestExpressApplication> => {
     );
 
     app.enableCors({
+      origin: [
+        'http://localhost:3000',
+        'https://api-wvuvaorzlq-uc.a.run.app',
+        'https://technical-interview-front.vercel.app'
+      ],
+      methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+      allowedHeaders: ['Content-Type', 'Accept', 'Authorization'],
+      credentials: true,
     });
 
     await app.init();
