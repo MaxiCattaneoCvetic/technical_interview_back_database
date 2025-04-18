@@ -17,7 +17,6 @@ export class DatabaseService implements DatabaseServiceInterface {
 
     async createDatabase(buffer: Buffer): Promise<ImportResult> {
         try {
-            // Primero, verificamos si la tabla existe
             const tableExists = await this.dataSource.query(
                 `SELECT EXISTS (
                     SELECT FROM information_schema.tables 
@@ -25,7 +24,7 @@ export class DatabaseService implements DatabaseServiceInterface {
                 );`
             );
 
-            // Si la tabla no existe, la creamos
+
             if (!tableExists[0].exists) {
                 await this.dataSource.synchronize();
             }
