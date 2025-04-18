@@ -4,13 +4,15 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { OrderController } from './controller/order.controller';
 import { OrderService } from './service/order.service';
-import { Order } from './models/order.entity';
+import { Order } from './domain/models/order.entity';
 import { AuthModule } from 'src/shared/auth/auth.module';
+import { ProductModule } from 'src/module_product/product.module';
 
 @Module({
     imports: [
         AuthModule,
-        TypeOrmModule.forFeature([Order])
+        TypeOrmModule.forFeature([Order]),
+        ProductModule
     ],
     providers: [
         {
@@ -19,7 +21,6 @@ import { AuthModule } from 'src/shared/auth/auth.module';
         }
     ],
     controllers: [OrderController],
-
-
+    exports: ['OrderServiceInterface']
 })
 export class OrderModule { }

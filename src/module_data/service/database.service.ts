@@ -4,7 +4,7 @@ import * as ExcelJS from 'exceljs';
 import { Injectable } from '@nestjs/common';
 
 import { DatabaseServiceInterface } from './database.service.interface';
-import { Product } from '../models/product.entity';
+import { Product } from '../../module_product/domain/models/product.entity';
 import { ImportResult } from '../models/dto/import-response';
 
 @Injectable()

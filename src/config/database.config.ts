@@ -1,8 +1,8 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { config } from 'dotenv';
 
-import { Product } from 'src/module_data/models/product.entity';
-import { Order } from 'src/module_order/models/order.entity';
+import { Product } from 'src/module_product/domain/models/product.entity';
+import { Order } from 'src/module_order/domain/models/order.entity';
 
 
 config();

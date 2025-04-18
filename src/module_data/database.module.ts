@@ -3,7 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { databaseConfig } from '../config/database.config';
 import { DatabaseService } from './service/database.service';
-import { Product } from './models/product.entity';
+import { Product } from '../module_product/domain/models/product.entity';
 import { InitController } from './controller/init.controller';
 import { ConfigService } from '@nestjs/config';
 import { AuthModule } from 'src/shared/auth/auth.module';
