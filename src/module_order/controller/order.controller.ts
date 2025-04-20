@@ -1,8 +1,11 @@
-import { Body, Controller, Inject, Post, UseGuards, HttpException, HttpStatus } from "@nestjs/common";
+import { Body, Controller, Inject, Post, UseGuards, HttpException, HttpStatus, Get, Param, Put } from "@nestjs/common";
+
 import { OrderDto } from "../domain/models/dto/order.create.dto";
 import { OrderServiceInterface } from "../service/order.service.interface";
 import { AuthGuard } from "src/shared/auth/auth.guard";
 import { InsufficientStockError, OrderCreationError } from "../../module_product/domain/errors/product.errors";
+import { OrderUpdateResponse } from "../domain/models/dto/responses/order.update.response";
+import { OrderUpdateDto } from "../domain/models/dto/order.update.dto";
 
 @Controller('order')
 export class OrderController {
@@ -49,4 +52,36 @@ export class OrderController {
             }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @Get(':id')
+    async getOrder(@Param('id') id: string) {
+        try {
+            const order = await this.orderService.getOrderById(id);
+            return {
+                success: true,
+                data: order
+            };
+        } catch (error) {
+            throw new HttpException({
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                error: 'Internal Server Error',
+                message: 'An unexpected error occurred',
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Put()
+    async updateOrder(@Body() order: OrderUpdateDto) {
+        try {
+            const response: OrderUpdateResponse = await this.orderService.updateOrderById(order);
+            return response;
+        } catch (error) {
+            throw new HttpException({
+                status: HttpStatus.INTERNAL_SERVER_ERROR,
+                error: 'Internal Server Error',
+                message: 'An unexpected error occurred',
+            }, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
 }

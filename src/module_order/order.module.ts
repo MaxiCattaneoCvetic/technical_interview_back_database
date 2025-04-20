@@ -7,7 +7,7 @@ import { OrderService } from './service/order.service';
 import { Order } from './domain/models/order.entity';
 import { AuthModule } from 'src/shared/auth/auth.module';
 import { ProductModule } from 'src/module_product/product.module';
-
+import { OrderRepository } from './repository/order.repository';
 @Module({
     imports: [
         AuthModule,
@@ -18,6 +18,10 @@ import { ProductModule } from 'src/module_product/product.module';
         {
             provide: "OrderServiceInterface",
             useClass: OrderService
+        },
+        {
+            provide: "OrderRepositoryInterface",
+            useClass: OrderRepository
         }
     ],
     controllers: [OrderController],
