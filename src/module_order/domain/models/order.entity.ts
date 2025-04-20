@@ -8,12 +8,9 @@ export class Order {
   @Column()
   customerName: string;
 
-  @Column()
-  customerPhone: string;
-
   @Column('jsonb')
   items: {
-    productId: string;
+    code: string;
     quantity: number;
     price: number;
   }[];

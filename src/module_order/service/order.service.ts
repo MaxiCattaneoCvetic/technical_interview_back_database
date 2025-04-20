@@ -95,12 +95,11 @@ export class OrderService implements OrderServiceInterface {
         try {
             await this.productService.udpateProductDatabase({
                 items: order.items.map(item => ({
-                    productId: item.productId,
+                    code: item.code,
                     quantity: item.quantity
                 }))
             });
         } catch (error) {
-
             throw error;
         }
     }

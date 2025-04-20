@@ -1,13 +1,13 @@
 export class OrderDto {
+    id?: string;
     customerName: string;
-    customerPhone: string;
     items: {
-        productId: string;
+        code: string;
         quantity: number;
         price: number;
     }[];
     totalAmount: number;
     status: string;
-    createdAt: Date;
-    updatedAt: Date;
+    createdAt?: Date;
+    updatedAt?: Date;
 }

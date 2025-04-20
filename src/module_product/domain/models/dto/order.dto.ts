@@ -1,6 +1,6 @@
 export class OrderDto {
     items: {
-        productId: string;
+        code: string;
         quantity: number;
     }[];
 }

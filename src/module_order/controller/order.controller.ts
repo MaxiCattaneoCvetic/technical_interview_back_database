@@ -7,6 +7,7 @@ import { InsufficientStockError, OrderCreationError } from "../../module_product
 import { OrderUpdateResponse } from "../domain/models/dto/responses/order.update.response";
 import { OrderUpdateDto } from "../domain/models/dto/order.update.dto";
 
+
 @Controller('order')
 export class OrderController {
     constructor(
@@ -16,21 +17,18 @@ export class OrderController {
 
     @Post()
     @UseGuards(AuthGuard)
-    async createOrder(@Body() order: OrderDto) {
+    async createOrder(@Body() order: OrderDto): Promise<string> {
         try {
+            console.log('Creating order:', order);
             const orderId = await this.orderService.createOrder(order);
-            return {
-                success: true,
-                data: {
-                    orderId
-                }
-            };
+
+            return orderId
         } catch (error: any) {
             if (error instanceof InsufficientStockError) {
                 throw new HttpException({
                     status: HttpStatus.BAD_REQUEST,
-                    error: 'Insufficient Stock',
-                    message: error.message,
+                    error: 'Stock Insuficiente',
+                    message: 'Lo sentimos, no tenemos suficiente stock para completar tu pedido.',
                     type: 'INSUFFICIENT_STOCK_ERROR'
                 }, HttpStatus.BAD_REQUEST);
             }
@@ -38,50 +36,53 @@ export class OrderController {
             if (error instanceof OrderCreationError) {
                 throw new HttpException({
                     status: HttpStatus.BAD_REQUEST,
-                    error: 'Order Creation Failed',
-                    message: error.message,
+                    error: 'Error al crear el pedido',
+                    message: 'Hubo un problema al procesar tu pedido. Por favor, intenta nuevamente.',
                     type: 'ORDER_CREATION_ERROR'
                 }, HttpStatus.BAD_REQUEST);
             }
 
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
-                error: 'Internal Server Error',
-                message: 'An unexpected error occurred',
+                error: 'Error del Servidor',
+                message: 'Lo sentimos, ha ocurrido un error inesperado. Por favor, intenta más tarde.',
                 type: 'INTERNAL_SERVER_ERROR'
             }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Get(':id')
-    async getOrder(@Param('id') id: string) {
+    async getOrder(@Param('id') id: string): Promise<string> {
         try {
             const order = await this.orderService.getOrderById(id);
-            return {
-                success: true,
-                data: order
-            };
+            if (!order?.id) {
+                throw new HttpException({
+                    status: HttpStatus.NOT_FOUND,
+                    error: 'Pedido no encontrado',
+                    message: 'No se encontró el pedido solicitado.',
+                }, HttpStatus.NOT_FOUND);
+            }
+            return order.id;
         } catch (error) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
-                error: 'Internal Server Error',
-                message: 'An unexpected error occurred',
+                error: 'Error del Servidor',
+                message: 'Lo sentimos, ha ocurrido un error inesperado. Por favor, intenta más tarde.',
             }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
     @Put()
-    async updateOrder(@Body() order: OrderUpdateDto) {
+    async updateOrder(@Body() order: OrderUpdateDto): Promise<OrderUpdateResponse> {
         try {
             const response: OrderUpdateResponse = await this.orderService.updateOrderById(order);
             return response;
         } catch (error) {
             throw new HttpException({
                 status: HttpStatus.INTERNAL_SERVER_ERROR,
-                error: 'Internal Server Error',
-                message: 'An unexpected error occurred',
+                error: 'Error del Servidor',
+                message: 'Lo sentimos, ha ocurrido un error inesperado. Por favor, intenta más tarde.',
             }, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
 }

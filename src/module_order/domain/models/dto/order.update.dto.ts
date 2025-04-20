@@ -1,7 +1,7 @@
 export class OrderUpdateDto {
     id: string;
     items: {
-        productId: string;
+        code: string;
         quantity: number;
         price: number;
     }[];

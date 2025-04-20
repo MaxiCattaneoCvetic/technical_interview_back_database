@@ -29,11 +29,11 @@ export class ProductService implements ProductServiceInterface {
 
             for (const item of order.items) {
                 const product = await this.productRepository.findOne({
-                    where: { id: item.productId }
+                    where: { code: item.code }
                 });
 
                 if (!product) {
-                    throw new NotFoundException(`Product with ID ${item.productId} not found`);
+                    throw new NotFoundException(`Product with ID ${item.code} not found`);
                 }
 
                 if (product.availableQuantity < item.quantity) {
